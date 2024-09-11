@@ -22,17 +22,18 @@ data "template_file" "mariadb_userdata" {
     apt-get update
     apt-get install -y mariadb-server
 
-    sudo mariadb-secure-installation << EOF
-
-    Y
-    Y
-    ubuntu
-    ubuntu
-    Y
-    n
-    Y
-    Y
-    EOF
+    expect -c "
+    spawn sudo mariadb-secure-installation
+    expect \"Enter current password for root\" { send \"\\r\" }
+    expect \"Set root password\" { send \"Y\\r\" }
+    expect \"New password\" { send \"ubuntu\\r\" }
+    expect \"Re-enter new password\" { send \"ubuntu\\r\" }
+    expect \"Remove anonymous users\" { send \"Y\\r\" }
+    expect \"Disallow root login remotely\" { send \"n\\r\" }
+    expect \"Remove test database and access to it\" { send \"Y\\r\" }
+    expect \"Reload privilege tables now\" { send \"Y\\r\" }
+    expect eof
+    "
 
     systemctl start mariadb
     systemctl enable mariadb
