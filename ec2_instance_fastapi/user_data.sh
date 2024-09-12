@@ -14,7 +14,7 @@ app = FastAPI()
 
 @app.get('/')
 def index():
-return {'Hello': 'World!!'}
+  return {'Hello': 'World!!'}
 EOL
 
 cat <<EOL > /etc/systemd/system/fastapi.service
